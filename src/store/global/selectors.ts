@@ -19,6 +19,7 @@ const sessionWidth = (s: GlobalStore) => s.status.sessionsWidth;
 const filePanelWidth = (s: GlobalStore) => s.status.filePanelWidth;
 const inputHeight = (s: GlobalStore) => s.status.inputHeight;
 const threadInputHeight = (s: GlobalStore) => s.status.threadInputHeight;
+const systemStatus = (s: GlobalStore) => s.status;
 
 export const systemStatusSelectors = {
   filePanelWidth,
@@ -34,5 +35,6 @@ export const systemStatusSelectors = {
   showFilePanel,
   showSessionPanel,
   showSystemRole,
+  systemStatus,
   threadInputHeight,
 };

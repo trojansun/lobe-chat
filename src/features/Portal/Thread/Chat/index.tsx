@@ -8,15 +8,11 @@ interface ConversationProps {
   mobile?: boolean;
 }
 
-const Conversation = memo<ConversationProps>(({ mobile }) => {
-  console.log('Conversation');
-
-  return (
-    <Flexbox height={'100%'}>
-      <ChatList mobile={mobile} />
-      <ChatInput />
-    </Flexbox>
-  );
-});
+const Conversation = memo<ConversationProps>(({ mobile }) => (
+  <Flexbox height={'100%'}>
+    <ChatList mobile={mobile} />
+    <ChatInput />
+  </Flexbox>
+));
 
 export default Conversation;

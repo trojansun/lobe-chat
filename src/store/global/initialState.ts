@@ -35,6 +35,7 @@ export interface SystemStatus {
   expandSessionGroupKeys: string[];
   filePanelWidth: number;
   hidePWAInstaller?: boolean;
+  hideThreadLimitAlert?: boolean;
   inputHeight: number;
   mobileShowPortal?: boolean;
   mobileShowTopic?: boolean;
@@ -62,6 +63,7 @@ export const INITIAL_STATUS = {
   expandSessionGroupKeys: [SessionDefaultGroup.Pinned, SessionDefaultGroup.Default],
   filePanelWidth: 320,
   hidePWAInstaller: false,
+  hideThreadLimitAlert: false,
   inputHeight: 200,
   mobileShowTopic: false,
   sessionsWidth: 320,
