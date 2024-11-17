@@ -1,9 +1,9 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix  */
 import { boolean, jsonb, pgTable, text, unique } from 'drizzle-orm/pg-core';
+import { createInsertSchema } from 'drizzle-zod';
 
 import { idGenerator } from '../../utils/idGenerator';
 import { timestamps, timestamptz } from './_helpers';
-import { messages } from './message';
 import { sessions } from './session';
 import { users } from './user';
 
@@ -35,7 +35,7 @@ export type TopicItem = typeof topics.$inferSelect;
 // @ts-ignore
 export const threads = pgTable('threads', {
   id: text('id')
-    .$defaultFn(() => idGenerator('threads'))
+    .$defaultFn(() => idGenerator('threads', 16))
     .primaryKey(),
 
   title: text('title'),
@@ -44,13 +44,9 @@ export const threads = pgTable('threads', {
   topicId: text('topic_id')
     .references(() => topics.id, { onDelete: 'cascade' })
     .notNull(),
-  sourceMessageId: text('source_message_id')
-    .references(() => messages.id, { onDelete: 'set null' })
-    .notNull(),
+  sourceMessageId: text('source_message_id').notNull(),
   // @ts-ignore
   parentThreadId: text('parent_thread_id').references(() => threads.id, { onDelete: 'set null' }),
-
-  sourcePreview: text('source_preview'),
 
   userId: text('user_id')
     .references(() => users.id, { onDelete: 'cascade' })
@@ -62,3 +58,4 @@ export const threads = pgTable('threads', {
 
 export type NewThread = typeof threads.$inferInsert;
 export type ThreadItem = typeof threads.$inferSelect;
+export const insertThreadSchema = createInsertSchema(threads);

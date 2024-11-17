@@ -1,5 +1,5 @@
 {
-  "id": "f06163e7-80aa-4c42-a5b2-4f793d617b52",
+  "id": "d3f128f8-3bb4-44bc-9389-c17cef53ba87",
   "prevId": "751e7974-9823-4b9b-aca6-230789c873ac",
   "version": "7",
   "dialect": "postgresql",
@@ -1391,6 +1391,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "thread_id": {
+          "name": "thread_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "parent_id": {
           "name": "parent_id",
           "type": "text",
@@ -1502,6 +1508,19 @@
           "tableTo": "topics",
           "columnsFrom": [
             "topic_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "messages_thread_id_threads_id_fk": {
+          "name": "messages_thread_id_threads_id_fk",
+          "tableFrom": "messages",
+          "tableTo": "threads",
+          "columnsFrom": [
+            "thread_id"
           ],
           "columnsTo": [
             "id"
@@ -3153,12 +3172,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "source_preview": {
-          "name": "source_preview",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "user_id": {
           "name": "user_id",
           "type": "text",
@@ -3207,19 +3220,6 @@
             "id"
           ],
           "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "threads_source_message_id_messages_id_fk": {
-          "name": "threads_source_message_id_messages_id_fk",
-          "tableFrom": "threads",
-          "tableTo": "messages",
-          "columnsFrom": [
-            "source_message_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
           "onUpdate": "no action"
         },
         "threads_parent_thread_id_threads_id_fk": {

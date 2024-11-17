@@ -129,17 +129,32 @@ export interface CreateMessageParams
   fromProvider?: string;
   role: MessageRoleType;
   sessionId: string;
+  threadId?: string;
   topicId?: string;
   traceId?: string;
 }
 
 export interface SendMessageParams {
+  /**
+   * create a thread
+   */
+  createThread?: boolean;
   files?: UploadFileItem[];
   /**
    *
    * https://github.com/lobehub/lobe-chat/pull/2086
    */
   isWelcomeQuestion?: boolean;
+  message: string;
+  onlyAddUserMessage?: boolean;
+}
+
+export interface SendThreadMessageParams {
+  /**
+   * create a thread
+   */
+  createNewThread?: boolean;
+  // files?: UploadFileItem[];
   message: string;
   onlyAddUserMessage?: boolean;
 }

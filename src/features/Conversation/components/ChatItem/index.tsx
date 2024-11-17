@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useAgentStore } from '@/store/agent';
 import { agentSelectors } from '@/store/agent/selectors';
 import { useChatStore } from '@/store/chat';
-import { chatPortalSelectors, chatSelectors } from '@/store/chat/selectors';
+import { chatSelectors, threadSelectors } from '@/store/chat/selectors';
 import { useSessionStore } from '@/store/session';
 import { sessionMetaSelectors } from '@/store/session/selectors';
 import { useUserStore } from '@/store/user';
@@ -143,7 +143,7 @@ const Item = memo<ChatListItemProps>(({ index, id, hideActionBar, showThreadDivi
 
   const [historyLength, threadMessageId] = useChatStore((s) => [
     chatSelectors.currentChats(s).length,
-    chatPortalSelectors.threadMessageId(s),
+    threadSelectors.threadStartMessageId(s),
   ]);
 
   const enableHistoryDivider = useAgentStore((s) => {
@@ -262,8 +262,6 @@ const Item = memo<ChatListItemProps>(({ index, id, hideActionBar, showThreadDivi
     )
   );
 });
-
-Item.displayName = 'ChatItem';
 
 Item.displayName = 'ChatItem';
 

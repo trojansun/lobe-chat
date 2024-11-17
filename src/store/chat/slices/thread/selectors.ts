@@ -4,6 +4,7 @@ import { ThreadType } from '@/types/topic';
 
 import { chatSelectors } from '../message/selectors';
 
+const threadStartMessageId = (s: ChatStoreState) => s.threadStartMessageId;
 const filterUntilTargetId = (idList: string[], targetId?: string) => {
   if (!targetId) return idList;
 
@@ -16,26 +17,34 @@ const filterUntilTargetId = (idList: string[], targetId?: string) => {
 
 const threadMessages = (s: ChatStoreState): string[] => {
   // 如果是独立话题模式，则只显示话题开始消息
-  if (s.portalNewThreadMode === ThreadType.Standalone)
-    return [s.portalThreadStartMessageId, MESSAGE_THREAD_DIVIDER_ID].filter(Boolean) as string[];
+  if (s.newThreadMode === ThreadType.Standalone)
+    return [threadStartMessageId(s), MESSAGE_THREAD_DIVIDER_ID].filter(Boolean) as string[];
 
   // skip tool message
   const data = chatSelectors.currentChats(s).filter((m) => m.role !== 'tool');
 
   const items = filterUntilTargetId(
     data.map((i) => i.id),
-    s.portalThreadStartMessageId,
+    threadStartMessageId(s),
   );
   return [...items, MESSAGE_THREAD_DIVIDER_ID];
 };
 
 const threadStartMessageIndex = (s: ChatStoreState) => {
-  return !s.portalThreadStartMessageId
-    ? -1
-    : threadMessages(s).indexOf(s.portalThreadStartMessageId);
+  const theadMessageId = threadStartMessageId(s);
+
+  return !theadMessageId ? -1 : threadMessages(s).indexOf(theadMessageId);
+};
+
+const getThreadsByTopic = (topicId?: string) => (s: ChatStoreState) => {
+  if (!topicId) return;
+
+  return s.threadMaps[topicId];
 };
 
 export const threadSelectors = {
+  getThreadsByTopic,
   threadMessages,
+  threadStartMessageId,
   threadStartMessageIndex,
 };

@@ -13,9 +13,9 @@ import { ChatMessageAction, chatMessage } from './slices/message/action';
 import { ChatPluginAction, chatPlugin } from './slices/plugin/action';
 import { ShareAction, chatShare } from './slices/share/action';
 import { ChatTopicAction, chatTopic } from './slices/topic/action';
-import { chatAiChat, ChatAIChatAction } from './slices/aiChat/actions';
-import { chatTTS, ChatTTSAction } from './slices/tts/action';
-import { chatThreadMessage, ChatThreadAction } from './slices/thread/action';
+import { ChatAIChatAction, chatAiChat } from './slices/aiChat/actions';
+import { ChatTTSAction, chatTTS } from './slices/tts/action';
+import { ChatThreadAction, chatThreadMessage } from './slices/thread/action';
 
 export interface ChatStoreAction
   extends ChatMessageAction,

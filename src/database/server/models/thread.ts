@@ -2,19 +2,9 @@ import { eq } from 'drizzle-orm';
 import { and, desc } from 'drizzle-orm/expressions';
 
 import { serverDB } from '@/database/server';
-import { ThreadStatus, ThreadType } from '@/types/topic';
+import { CreateThreadParams, ThreadStatus } from '@/types/topic';
 
 import { ThreadItem, threads } from '../schemas/lobechat';
-
-interface CreateThreadParams {
-  parentThreadId?: string;
-  sourceMessageId: string;
-  sourcePreview?: string;
-  status: ThreadStatus;
-  title: string;
-  topicId: string;
-  type: ThreadType;
-}
 
 export class ThreadModel {
   private userId: string;
@@ -27,7 +17,7 @@ export class ThreadModel {
     // @ts-ignore
     const [result] = await serverDB
       .insert(threads)
-      .values({ ...params, userId: this.userId })
+      .values({ ...params, status: ThreadStatus.Active, userId: this.userId })
       .onConflictDoNothing()
       .returning();
 
@@ -42,10 +32,17 @@ export class ThreadModel {
     return serverDB.delete(threads).where(eq(threads.userId, this.userId));
   };
 
-  query = async () => {
+  query = async (): Promise<ThreadItem[]> => {
     return serverDB.query.threads.findMany({
       orderBy: [desc(threads.updatedAt)],
       where: eq(threads.userId, this.userId),
+    });
+  };
+
+  queryByTopicId = async (topicId: string): Promise<ThreadItem[]> => {
+    return serverDB.query.threads.findMany({
+      orderBy: [desc(threads.updatedAt)],
+      where: and(eq(threads.topicId, topicId), eq(threads.userId, this.userId)),
     });
   };
 
