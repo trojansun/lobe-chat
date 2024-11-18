@@ -1,7 +1,7 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix, typescript-sort-keys/interface */
 // Disable the auto sort key eslint rule to make the code more logic and readable
 import isEqual from 'fast-deep-equal';
-import { SWRResponse } from 'swr';
+import { SWRResponse, mutate } from 'swr';
 import { StateCreator } from 'zustand/vanilla';
 
 import { useClientDataSWR } from '@/libs/swr';
@@ -26,6 +26,7 @@ export interface ChatThreadAction {
   addAIMessage: () => Promise<void>;
   // update
   updateThreadInputMessage: (message: string) => void;
+  refreshThreads: () => Promise<void>;
   toggleMessageEditing: (id: string, editing: boolean) => void;
 
   /**
@@ -109,12 +110,18 @@ export const chatThreadMessage: StateCreator<
 
     // if there is no activeThreadId, then create a thread
     if (!activeThreadId) {
+      if (!threadStartMessageId) return;
+
       const threadId = await get().createThread({
         message: newMessage,
         sourceMessageId: threadStartMessageId,
         topicId: activeTopicId,
         type: newThreadMode,
       });
+
+      await get().refreshThreads();
+      // mark the portal in thread mode
+      set({ portalThreadId: threadId });
 
       return;
     }
@@ -160,7 +167,6 @@ export const chatThreadMessage: StateCreator<
 
     // Get the current messages to generate AI response
     const messages = chatSelectors.currentChats(get());
-    const userFiles = chatSelectors.currentUserFiles(get()).map((f) => f.id);
 
     await internal_coreProcessMessage(messages, id, {
       ragQuery: get().internal_shouldUseRAG() ? message : undefined,
@@ -227,4 +233,11 @@ export const chatThreadMessage: StateCreator<
         },
       },
     ),
+
+  refreshThreads: async () => {
+    const topicId = get().activeTopicId;
+    if (!topicId) return;
+
+    return mutate([SWR_USE_FETCH_THREADS, get().activeId]);
+  },
 });

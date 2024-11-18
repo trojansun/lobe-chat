@@ -44,7 +44,6 @@ export const threadRouter = router({
         type: input.type,
       });
 
-      console.log('message:', input.message);
       await ctx.messageModel.create({ threadId: thread?.id, ...input.message });
 
       return thread?.id;

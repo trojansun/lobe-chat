@@ -44,10 +44,6 @@ const isArtifactTagClosed = (id: string) => (s: ChatStoreState) => {
   return ARTIFACT_TAG_CLOSED_REGEX.test(content || '');
 };
 
-const showThread = (s: ChatStoreState) => !!s.threadStartMessageId;
-
-const newThreadMode = (s: ChatStoreState) => s.portalNewThreadMode;
-
 /* eslint-disable sort-keys-fix/sort-keys-fix, typescript-sort-keys/interface */
 export const chatPortalSelectors = {
   isPluginUIOpen,
@@ -58,9 +54,6 @@ export const chatPortalSelectors = {
 
   messageDetailId,
   showMessageDetail,
-
-  showThread,
-  newThreadMode,
 
   showPluginUI,
   showPortal,
@@ -78,3 +71,5 @@ export const chatPortalSelectors = {
   artifactCodeLanguage,
   isArtifactTagClosed,
 };
+
+export * from './selectors/thread';

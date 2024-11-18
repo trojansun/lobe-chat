@@ -12,7 +12,7 @@ import {
   CHAT_PORTAL_WIDTH,
 } from '@/const/layoutTokens';
 import { useChatStore } from '@/store/chat';
-import { chatPortalSelectors } from '@/store/chat/slices/portal/selectors';
+import { chatPortalSelectors, portalThreadSelectors } from '@/store/chat/slices/portal/selectors';
 
 const useStyles = createStyles(({ css, token, isDarkMode }) => ({
   content: css`
@@ -46,7 +46,7 @@ const PortalPanel = memo(({ children }: PropsWithChildren) => {
     chatPortalSelectors.showPortal(s),
     chatPortalSelectors.showPluginUI(s),
     chatPortalSelectors.showArtifactUI(s),
-    chatPortalSelectors.showThread(s),
+    portalThreadSelectors.showThread(s),
   ]);
 
   return (
