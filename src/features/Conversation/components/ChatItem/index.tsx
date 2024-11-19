@@ -5,11 +5,12 @@ import { createStyles } from 'antd-style';
 import isEqual from 'fast-deep-equal';
 import { MouseEventHandler, ReactNode, memo, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Flexbox } from 'react-layout-kit';
 
 import { useAgentStore } from '@/store/agent';
 import { agentSelectors } from '@/store/agent/selectors';
 import { useChatStore } from '@/store/chat';
-import { chatSelectors, threadSelectors } from '@/store/chat/selectors';
+import { chatSelectors } from '@/store/chat/selectors';
 import { useSessionStore } from '@/store/session';
 import { sessionMetaSelectors } from '@/store/session/selectors';
 import { useUserStore } from '@/store/user';
@@ -26,7 +27,6 @@ import {
 } from '../../Messages';
 import History from '../History';
 import { markdownElements } from '../MarkdownElements';
-import ThreadDivider from '../ThreadDivider';
 import ActionsBar from './ActionsBar';
 import { processWithArtifact } from './utils';
 
@@ -37,6 +37,7 @@ const useStyles = createStyles(({ css, prefixCls }) => ({
     opacity: 0.6;
   `,
   message: css`
+    position: relative;
     // prevent the textarea too long
     .${prefixCls}-input {
       max-height: 900px;
@@ -45,13 +46,14 @@ const useStyles = createStyles(({ css, prefixCls }) => ({
 }));
 
 export interface ChatListItemProps {
+  className?: string;
+  endRender?: ReactNode;
   hideActionBar?: boolean;
   id: string;
   index: number;
-  showThreadDivider?: boolean;
 }
 
-const Item = memo<ChatListItemProps>(({ index, id, hideActionBar, showThreadDivider }) => {
+const Item = memo<ChatListItemProps>(({ index, className, id, hideActionBar, endRender }) => {
   const fontSize = useUserStore(userGeneralSettingsSelectors.fontSize);
   const { t } = useTranslation('common');
   const { styles, cx } = useStyles();
@@ -141,10 +143,7 @@ const Item = memo<ChatListItemProps>(({ index, id, hideActionBar, showThreadDivi
 
   const error = useErrorContent(item?.error);
 
-  const [historyLength, threadMessageId] = useChatStore((s) => [
-    chatSelectors.currentChats(s).length,
-    threadSelectors.threadStartMessageId(s),
-  ]);
+  const historyLength = useChatStore((s) => chatSelectors.currentChats(s).length);
 
   const enableHistoryDivider = useAgentStore((s) => {
     const config = agentSelectors.currentAgentChatConfig(s);
@@ -155,7 +154,6 @@ const Item = memo<ChatListItemProps>(({ index, id, hideActionBar, showThreadDivi
     );
   });
 
-  const enableThreadDivider = showThreadDivider && threadMessageId === id;
   // remove line breaks in artifact tag to make the ast transform easier
   const message =
     !editing && item?.role === 'assistant' ? processWithArtifact(item?.content) : item?.content;
@@ -231,13 +229,12 @@ const Item = memo<ChatListItemProps>(({ index, id, hideActionBar, showThreadDivi
 
   return (
     item && (
-      <>
+      <Flexbox className={cx(styles.message, className, isMessageLoading && styles.loading)}>
         {enableHistoryDivider && <History />}
         <ChatItem
           actions={actions}
           avatar={item.meta}
           belowMessage={belowMessage}
-          className={cx(styles.message, isMessageLoading && styles.loading)}
           editing={editing}
           error={error}
           errorMessage={errorMessage}
@@ -257,8 +254,8 @@ const Item = memo<ChatListItemProps>(({ index, id, hideActionBar, showThreadDivi
           time={item.updatedAt || item.createdAt}
           type={type === 'chat' ? 'block' : 'pure'}
         />
-        {enableThreadDivider && <ThreadDivider />}
-      </>
+        {endRender}
+      </Flexbox>
     )
   );
 });

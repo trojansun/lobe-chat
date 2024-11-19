@@ -42,8 +42,29 @@ const getThreadsByTopic = (topicId?: string) => (s: ChatStoreState) => {
   return s.threadMaps[topicId];
 };
 
+const currentTopicThreads = (s: ChatStoreState) => {
+  if (!s.activeTopicId) return [];
+
+  return s.threadMaps[s.activeTopicId] || [];
+};
+
+const getThreadBySourceMsgId = (id: string) => (s: ChatStoreState) => {
+  const threads = currentTopicThreads(s);
+
+  return threads.find((t) => t.sourceMessageId === id);
+};
+
+const hasThreadBySourceMsgId = (id: string) => (s: ChatStoreState) => {
+  const threads = currentTopicThreads(s);
+
+  return threads.some((t) => t.sourceMessageId === id);
+};
+
 export const threadSelectors = {
+  currentTopicThreads,
+  getThreadBySourceMsgId,
   getThreadsByTopic,
+  hasThreadBySourceMsgId,
   threadMessages,
   threadStartMessageId,
   threadStartMessageIndex,
