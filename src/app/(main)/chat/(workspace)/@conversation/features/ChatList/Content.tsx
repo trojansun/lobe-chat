@@ -27,7 +27,7 @@ const Content = memo<ListProps>(({ mobile }) => {
   const [sessionId] = useSessionStore((s) => [s.activeId]);
   useFetchMessages(sessionId, activeTopicId);
 
-  const data = useChatStore(chatSelectors.currentChatIDsWithGuideMessage, isEqual);
+  const data = useChatStore(chatSelectors.mainChatMessageIdsWithGuide, isEqual);
 
   const itemContent = useCallback(
     (index: number, id: string) => <MainChatItem id={id} index={index} />,

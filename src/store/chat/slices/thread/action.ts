@@ -40,6 +40,7 @@ export interface ChatThreadAction {
     type: ThreadType;
   }) => Promise<string | undefined>;
   openThreadCreator: (messageId: string) => void;
+  openThreadInPortal: (threadId: string) => void;
   useFetchThreads: (topicId?: string) => SWRResponse<ThreadItem[]>;
 }
 
@@ -77,9 +78,12 @@ export const chatThreadMessage: StateCreator<
     set({ threadInputMessage: message }, false, n(`updateThreadInputMessage`, message));
   },
   openThreadCreator: (messageId) => {
+    set({ threadStartMessageId: messageId, portalThreadId: undefined }, false, 'openThreadCreator');
     get().togglePortal(true);
-
-    set({ threadStartMessageId: messageId }, false, 'openThreadCreator');
+  },
+  openThreadInPortal: (threadId) => {
+    set({ portalThreadId: threadId }, false, 'openThreadInPortal');
+    get().togglePortal(true);
   },
   sendThreadMessage: async ({ message, onlyAddUserMessage }) => {
     const {
@@ -119,9 +123,9 @@ export const chatThreadMessage: StateCreator<
         type: newThreadMode,
       });
 
-      await get().refreshThreads();
       // mark the portal in thread mode
       set({ portalThreadId: threadId });
+      await get().refreshThreads();
 
       return;
     }

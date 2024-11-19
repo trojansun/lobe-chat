@@ -30,6 +30,7 @@ const Thread = memo<ThreadProps>(({ id, placement }) => {
   const { styles } = useStyles();
 
   const threads = useChatStore(threadSelectors.getThreadsBySourceMsgId(id), isEqual);
+  const openThreadInPortal = useChatStore((s) => s.openThreadInPortal);
 
   return (
     <Flexbox
@@ -44,7 +45,14 @@ const Thread = memo<ThreadProps>(({ id, placement }) => {
         </Flexbox>
         <Flexbox gap={6}>
           {threads.map((thread) => (
-            <Flexbox gap={8} horizontal key={thread.id}>
+            <Flexbox
+              gap={8}
+              horizontal
+              key={thread.id}
+              onClick={() => {
+                openThreadInPortal(thread.id);
+              }}
+            >
               {thread?.title}
               <Typography.Text type={'secondary'}>
                 {dayjs(thread?.lastActiveAt).format('YYYY-MM-DD')}

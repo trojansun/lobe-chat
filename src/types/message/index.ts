@@ -104,8 +104,9 @@ export interface ChatMessage extends BaseDataModel {
   role: MessageRoleType;
 
   sessionId?: string;
-  tool_call_id?: string;
+  threadId?: string | null;
 
+  tool_call_id?: string;
   tools?: ChatToolPayload[];
   /**
    * 保存到主题的消息
@@ -129,7 +130,7 @@ export interface CreateMessageParams
   fromProvider?: string;
   role: MessageRoleType;
   sessionId: string;
-  threadId?: string;
+  threadId?: string | null;
   topicId?: string;
   traceId?: string;
 }
