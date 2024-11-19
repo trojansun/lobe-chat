@@ -23,7 +23,7 @@ const useStyles = createStyles(({ css, token }) => ({
       content: '';
 
       position: absolute;
-      inset-block: 56px 0;
+      inset-block: 56px 50px;
 
       width: 32px;
 
